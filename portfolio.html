@@ -192,5 +192,47 @@ Portfolio
 </footer>
 
 </div>
+
+<!-- Portfolio lightbox: opens images in an overlay with a close (X) button -->
+<style>
+#cp-lightbox{position:fixed;inset:0;z-index:9999;display:none;align-items:center;justify-content:center;padding:24px;background:rgba(10,10,12,.92)}
+#cp-lightbox.open{display:flex}
+#cp-lightbox img{max-width:100%;max-height:90vh;border-radius:12px;box-shadow:0 10px 40px rgba(0,0,0,.6)}
+#cp-lightbox-close{position:fixed;top:20px;right:20px;width:48px;height:48px;border-radius:50%;border:2px solid #F4F4F8;background:rgba(20,20,22,.8);color:#F4F4F8;font-size:28px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center}
+#cp-lightbox-close:hover,#cp-lightbox-close:focus-visible{background:#00B773;border-color:#00B773;color:#0F0F12;outline:none}
+</style>
+<div id="cp-lightbox" role="dialog" aria-modal="true" aria-label="Image viewer">
+<button id="cp-lightbox-close" type="button" aria-label="Close image">&times;</button>
+<img src="" alt="">
+</div>
+<script>
+(function(){
+  var box=document.getElementById('cp-lightbox');
+  var img=box.querySelector('img');
+  var btn=document.getElementById('cp-lightbox-close');
+  var lastLink=null;
+  function open(link){
+    var thumb=link.querySelector('img');
+    img.src=link.getAttribute('href');
+    img.alt=thumb?thumb.alt:'';
+    lastLink=link;
+    box.classList.add('open');
+    document.body.style.overflow='hidden';
+    btn.focus();
+  }
+  function close(){
+    box.classList.remove('open');
+    document.body.style.overflow='';
+    img.src='';
+    if(lastLink)lastLink.focus();
+  }
+  document.querySelectorAll('a[href^="images/portfolio/"]').forEach(function(a){
+    a.addEventListener('click',function(e){e.preventDefault();open(a);});
+  });
+  btn.addEventListener('click',close);
+  box.addEventListener('click',function(e){if(e.target===box)close();});
+  document.addEventListener('keydown',function(e){if(e.key==='Escape'&&box.classList.contains('open'))close();});
+})();
+</script>
 </body>
 </html>
